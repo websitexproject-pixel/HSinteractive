@@ -446,7 +446,7 @@
 .beam-shot {
   position: absolute;
   left: 135px;
-  bottom: 170px;
+  bottom: 225px;
   width: 0;
   height: 10px;
   border-radius: 999px;
@@ -1386,7 +1386,35 @@ h1 {
     ],
     correct: 0,
     explanation: "Correct. Health, safety and wellbeing is a standard agenda item at staff meetings."
-  }
+  },
+{
+  category: "🧼 Infection Prevention",
+  badge: "hygiene",
+  hazardEmoji: "🦠",
+  hazardLabel: "Germ risk",
+  question: "Good hand hygiene helps to:",
+  options: [
+    "Reduce the spread of infection",
+    "Replace the need for PPE",
+    "Avoid reporting hazards"
+  ],
+  correct: 0,
+  explanation: "Correct. Good hand hygiene helps reduce the spread of infection."
+},
+{
+  category: "🚪 Emergency Readiness",
+  badge: "champion",
+  hazardEmoji: "🚨",
+  hazardLabel: "Emergency plan",
+  question: "In an emergency, workers should:",
+  options: [
+    "Follow the workplace emergency procedures",
+    "Wait and see what others do",
+    "Ignore alarms if they seem accidental"
+  ],
+  correct: 0,
+  explanation: "Correct. Workers should follow workplace emergency procedures during an emergency."
+}
 ];
 
     const state = {
@@ -1550,12 +1578,19 @@ focusGameArea();
       els.feedback.textContent = 'Choose the safest answer.';
       els.answers.innerHTML = '';
 
-      q.options.forEach((option, idx) => {
+const answerChoices = q.options.map((option, idx) => ({
+  option,
+  originalIndex: idx
+}));
+
+const shuffledChoices = shuffle(answerChoices);
+
+      shuffledChoices.forEach((choice) => {
         const btn = document.createElement('button');
         btn.className = 'answer';
         btn.type = 'button';
-        btn.innerHTML = `<span>${escapeHtml(option)}</span><span aria-hidden="true">›</span>`;
-        btn.addEventListener('click', () => answerQuestion(idx));
+        btn.innerHTML = `<span>${escapeHtml(choice.option)}</span><span aria-hidden="true">›</span>`;
+btn.addEventListener('click', () => answerQuestion(choice.originalIndex));
         els.answers.appendChild(btn);
       });
 
