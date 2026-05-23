@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Nurse Safety Quest</title>
+
+  <style>
+    :root {
+      --bg1: #f9f7ff;
+      --bg2: #e8f7ff;
+      --bg3: #fff4f8;
+      --card: rgba(255, 255, 255, 0.74);
+      --card-strong: rgba(255, 255, 255, 0.92);
+      --ink: #2f3340;
+      --muted: #6c7280;
+      --blue: #d8e5f7;
+      --mint: #d8eedf;
+      --pink: #f2d9ef;
+      --yellow: #fdf1c9;
+      --coral: #fedcdb;
+      --shadow: 0 18px 45px rgba(64, 74, 105, 0.14);
+      --line: rgba(68, 78, 120, 0.14);
+      --danger: #e45d6f;
+      --success: #3a9f7b;
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(242, 217, 239, 0.9), transparent 28%),
+        radial-gradient(circle at 85% 20%, rgba(216, 238, 223, 0.9), transparent 28%),
+        radial-gradient(circle at 50% 90%, rgba(216, 229, 247, 0.9), transparent 35%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 50%, var(--bg3));
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), transparent 75%);
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .app {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      padding: 18px 14px calc(28px + var(--safeBottom));
+    }
+
+    .hero {
+      position: relative;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "🩺";
+      position: absolute;
+      right: 14px;
+      top: -8px;
+      font-size: 92px;
+      opacity: 0.12;
+      transform: rotate(-14deg);
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .62);
+      border: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    h1 {
+      margin: 12px 0 8px;
+      font-size: clamp(30px, 8vw, 58px);
+      line-height: .95;
+      letter-spacing: -0.055em;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 650px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
+    .hero-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.hero-actions .pdf-btn {
+  grid-column: 1 / -1;
+}
+	
+	.btn.pdf-btn {
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  background: linear-gradient(135deg, #ffffff, var(--pink));
+}
+
+    .btn {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      min-height: 48px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, .76);
+      color: var(--ink);
+      font-weight: 800;
+      box-shadow: 0 10px 25px rgba(53, 62, 94, .09);
+      cursor: pointer;
+      transition: transform .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #ffffff, var(--mint));
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, #ffffff, var(--blue));
+    }
+
+    .btn.yellow {
+      background: linear-gradient(135deg, #ffffff, var(--yellow));
+    }
+
+    .layout {
+      margin-top: 14px;
+    }
+
+    .top-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      margin: 14px 0;
+    }
+
+    .stat {
+      padding: 11px 10px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.64);
+      backdrop-filter: blur(14px);
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 19px;
+      line-height: 1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 5px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .game-shell {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: rgba(255,255,255,.60);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .game-stage {
+      position: relative;
+      height: min(55vh, 440px);
+      min-height: 330px;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,.65), rgba(255,255,255,.08) 48%, rgba(216,238,223,.36) 49%),
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,.75), transparent 12%),
+        radial-gradient(circle at 75% 16%, rgba(255,255,255,.75), transparent 15%),
+        linear-gradient(180deg, #eaf8ff, #fff8fb);
+      overflow: hidden;
+    }
+
+    .cloud {
+      position: absolute;
+      width: 90px;
+      height: 34px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.78);
+      filter: blur(.1px);
+      animation: drift 18s linear infinite;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .cloud::before {
+      width: 42px;
+      height: 42px;
+      left: 14px;
+      top: -18px;
+    }
+
+    .cloud::after {
+      width: 50px;
+      height: 50px;
+      right: 10px;
+      top: -24px;
+    }
+
+    .c1 { top: 48px; left: 8%; animation-duration: 22s; }
+    .c2 { top: 92px; left: 55%; transform: scale(.75); animation-duration: 28s; }
+
+    @keyframes drift {
+      from { transform: translateX(-140px); }
+      to { transform: translateX(calc(100vw + 140px)); }
+    }
+
+    .floor {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 80px;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.42) 0 28px, rgba(255,255,255,.10) 28px 56px),
+        linear-gradient(180deg, #d8eedf, #c8e8d4);
+      background-size: 92px 100%, auto;
+      border-top: 1px solid rgba(70, 115, 90, .14);
+      animation: floorRun .42s linear infinite;
+      z-index: 1;
+    }
+
+    .floor::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 27px;
+      height: 8px;
+      background: repeating-linear-gradient(90deg, rgba(70, 115, 90, .22) 0 34px, transparent 34px 68px);
+      animation: floorRun .32s linear infinite;
+    }
+
+    @keyframes floorRun {
+      from { background-position: 0 0; }
+      to { background-position: -92px 0; }
+    }
+
+    .runner {
+  position: absolute;
+  left: 2px;
+  bottom: 36px;
+  width: 230px;
+  height: 230px;
+  z-index: 4;
+  overflow: visible;
+}
+
+.runner-img {
+  position: absolute;
+  display: block;
+  object-fit: contain;
+  opacity: 0;
+  filter: drop-shadow(0 12px 12px rgba(60,70,100,.18));
+  transition: opacity .08s linear;
+}
+
+.runner-img.is-visible {
+  opacity: 1;
+}
+
+/* running GIF */
+.runner-run {
+  left: 16px;
+  bottom: 0;
+  width: 132px;
+  height: 190px;
+}
+
+/* firing GIF */
+.runner-fire {
+  left: 0;
+  bottom: -80px;
+  width: 350px;
+  height: 350px;
+}
+
+.runner.firing #runnerRun {
+  opacity: 0;
+}
+
+.runner.firing #runnerFire {
+  opacity: 1;
+}
+
+.runner-img.is-visible {
+  opacity: 1;
+}
+
+.runner.firing #runnerRun {
+  opacity: 0;
+}
+
+.runner.firing #runnerFire {
+  opacity: 1;
+}
+
+	
+
+    .runner::before {
+      content: "";
+      position: absolute;
+      left: -38px;
+      top: 30px;
+      width: 48px;
+      height: 48px;
+      background:
+        linear-gradient(90deg, transparent, rgba(122,164,202,.48), transparent) 0 6px / 44px 4px no-repeat,
+        linear-gradient(90deg, transparent, rgba(122,164,202,.38), transparent) 6px 22px / 36px 4px no-repeat,
+        linear-gradient(90deg, transparent, rgba(122,164,202,.28), transparent) 0 38px / 50px 4px no-repeat;
+      animation: speedLines .28s linear infinite;
+      opacity: .9;
+    }
+
+    @keyframes speedLines {
+      from { transform: translateX(0); opacity: .9; }
+      to { transform: translateX(-16px); opacity: .2; }
+    }
+
+    @keyframes nurseRunBounce {
+      from { transform: translateY(0) rotate(-1deg); }
+      to { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    .runner.jump {
+      bottom: 168px;
+      animation: jumpRun .56s ease-out;
+    }
+
+    @keyframes jumpRun {
+      0% { transform: translateY(0) rotate(0deg) scale(1); }
+      45% { transform: translateY(-18px) rotate(-5deg) scale(1.05); }
+      100% { transform: translateY(0) rotate(1deg) scale(1); }
+    }
+
+    .threat {
+  position: absolute;
+  right: -120px;
+  bottom: 92px;
+  width: 108px;
+  min-height: 118px;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  z-index: 3;
+  animation: threatMove 10s linear forwards;
+}
+
+.bacteria-face {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,.9), transparent 18%),
+    linear-gradient(135deg, #d8eedf, #bfe7ce);
+  border: 2px solid rgba(60, 110, 80, .18);
+  box-shadow: 0 18px 28px rgba(60, 90, 80, .16);
+  animation: bacteriaWobble .5s ease-in-out infinite alternate;
+}
+
+.bacteria-emoji {
+  font-size: 42px;
+  line-height: 1;
+}
+
+.threat-label {
+  max-width: 112px;
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.88);
+  border: 1px solid var(--line);
+  color: #45624f;
+  font-size: 11px;
+  font-weight: 900;
+  text-align: center;
+  box-shadow: 0 10px 18px rgba(60,70,100,.08);
+}
+.beam-shot {
+  position: absolute;
+  left: 135px;
+  bottom: 170px;
+  width: 0;
+  height: 10px;
+  border-radius: 999px;
+  opacity: 0;
+  z-index: 7;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(216,238,223,.15),
+    rgba(58,159,123,.95),
+    rgba(216,238,223,.2)
+  );
+  box-shadow:
+    0 0 14px rgba(58,159,123,.65),
+    0 0 30px rgba(58,159,123,.28);
+}
+
+.germ-explosion {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 96px;
+  height: 96px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 8;
+  transform: translate(-50%, -50%) scale(.4);
+}
+
+.germ-explosion span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 30px;
+  transform: translate(-50%, -50%);
+}
+
+.germ-explosion span:nth-child(1) {
+  margin-left: -24px;
+  margin-top: -12px;
+}
+
+.germ-explosion span:nth-child(2) {
+  font-size: 42px;
+}
+
+.germ-explosion span:nth-child(3) {
+  margin-left: 25px;
+  margin-top: 13px;
+}
+
+.germ-explosion.active {
+  animation: germExplosionPop .48s ease-out forwards;
+}
+
+@keyframes germExplosionPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.25) rotate(0deg);
+  }
+
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15) rotate(-6deg);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.35) rotate(8deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.75) rotate(18deg);
+  }
+}
+
+.beam-shot::after {
+  content: "";
+  position: absolute;
+  right: -13px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #d8eedf;
+  transform: translateY(-50%);
+  box-shadow: 0 0 18px rgba(58,159,123,.65);
+}
+
+.beam-shot.active {
+  animation: beamFireOnly .58s ease-out forwards;
+}
+
+@keyframes beamFireOnly {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+
+  18% {
+    width: 0;
+    opacity: 1;
+  }
+
+  68% {
+    width: 330px;
+    opacity: 1;
+  }
+
+  100% {
+    width: 330px;
+    opacity: 0;
+  }
+}
+.threat.defeated {
+  animation: threatDefeated .45s ease-out forwards;
+}
+
+.threat.hit {
+  animation: threatHit .4s ease-out forwards;
+}
+
+@keyframes threatMove {
+  from {
+    right: -120px;
+  }
+  to {
+    right: calc(100% - 135px);
+  }
+}
+
+@keyframes bacteriaWobble {
+  from {
+    transform: translateY(0) rotate(-4deg) scale(1);
+  }
+  to {
+    transform: translateY(-5px) rotate(4deg) scale(1.04);
+  }
+}
+
+
+@keyframes threatDefeated {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(.2) rotate(30deg);
+  }
+}
+
+@keyframes threatHit {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  50% {
+    transform: translateX(-12px) scale(1.08);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
+}
+
+    @keyframes miniObstacleMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(calc(-100vw - 180px)); }
+    }
+
+    .status-bubble {
+      position: absolute;
+      left: 18px;
+      top: 16px;
+      max-width: calc(100% - 36px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 22px rgba(60,70,100,.11);
+      font-size: 13px;
+      color: var(--muted);
+      z-index: 5;
+    }
+
+    .question-panel {
+      padding: 14px;
+      background: rgba(255,255,255,.70);
+      border-top: 1px solid var(--line);
+    }
+
+    .progress-wrap {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(60,70,100,.09);
+      overflow: hidden;
+      margin-bottom: 12px;
+      border: 1px solid rgba(60,70,100,.08);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--mint), var(--blue), var(--pink));
+      transition: width .25s ease;
+    }
+
+    .question-card {
+      padding: 15px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: var(--card-strong);
+      box-shadow: 0 12px 24px rgba(60,70,100,.08);
+    }
+
+    .question-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--yellow);
+      color: #6a560e;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid rgba(106,86,14,.12);
+      white-space: nowrap;
+    }
+
+    .q-count {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .question {
+      margin: 8px 0 12px;
+      font-size: clamp(17px, 5vw, 22px);
+      line-height: 1.28;
+      letter-spacing: -0.02em;
+      font-weight: 900;
+    }
+
+    .answers {
+      display: grid;
+      gap: 9px;
+    }
+
+    .answer {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 13px 14px;
+      background: rgba(255,255,255,.82);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 800;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .answer.correct {
+      background: linear-gradient(135deg, #fff, var(--mint));
+      border-color: rgba(58,159,123,.25);
+    }
+
+    .answer.wrong {
+      background: linear-gradient(135deg, #fff, var(--coral));
+      border-color: rgba(228,93,111,.25);
+    }
+
+    .feedback {
+      margin-top: 10px;
+      min-height: 46px;
+      padding: 11px 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.68);
+      border: 1px dashed rgba(68,78,120,.18);
+      color: var(--muted);
+      line-height: 1.35;
+      font-size: 13px;
+    }
+
+    .feedback.good {
+      color: #276d56;
+      background: rgba(216,238,223,.68);
+    }
+
+    .feedback.bad {
+      color: #93404c;
+      background: rgba(254,220,219,.68);
+    }
+
+    .badges {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .badge {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 12px 8px;
+      background: rgba(255,255,255,.64);
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      min-height: 75px;
+      display: grid;
+      place-items: center;
+      gap: 3px;
+      opacity: .55;
+      transition: opacity .2s ease, transform .2s ease, background .2s ease;
+    }
+
+    .badge.unlocked {
+      opacity: 1;
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(255,255,255,.9), var(--yellow));
+      color: #594511;
+    }
+
+    .badge .emoji {
+      display: block;
+      font-size: 22px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(38,43,60,.28);
+      backdrop-filter: blur(8px);
+      z-index: 30;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(520px, 100%);
+      border-radius: 28px;
+      padding: 18px;
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .modal-card h2 {
+      margin: 4px 0 8px;
+      font-size: 28px;
+      letter-spacing: -.04em;
+    }
+
+    .modal-card p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .settings {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: rgba(255,255,255,.58);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    details summary {
+      cursor: pointer;
+      padding: 16px;
+      font-weight: 900;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details summary::after {
+      content: "⌄";
+      font-size: 20px;
+      color: var(--muted);
+    }
+
+    details[open] summary::after {
+      content: "⌃";
+    }
+
+    .editor {
+      border-top: 1px solid var(--line);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 160px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255,255,255,.82);
+      color: var(--ink);
+      line-height: 1.45;
+      outline: none;
+    }
+
+    .tiny-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(16px + var(--safeBottom));
+      transform: translateX(-50%) translateY(120px);
+      width: min(420px, calc(100% - 28px));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+      z-index: 50;
+      transition: transform .25s ease;
+      text-align: center;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (min-width: 760px) {
+      .app {
+        padding: 26px 22px 40px;
+      }
+
+      .hero {
+        padding: 28px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 1.2fr .8fr;
+        gap: 14px;
+        align-items: start;
+      }
+
+      .top-stats {
+        margin-top: 0;
+      }
+
+      .game-stage {
+        height: 440px;
+      }
+
+      .hero-actions {
+        max-width: 440px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .hero-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .top-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .badges {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .runner {
+  left: -8px;
+  bottom: 42px;
+  width: 160px;
+  height: 160px;
+}
+
+      .runner.jump {
+        bottom: 158px;
+        animation: jumpRun .56s ease-out;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <section class="hero" aria-label="Nurse Safety Quest introduction">
+      <span class="kicker">🏥 QR phone game • easy policy competition</span>
+      <h1>Nurse Safety Quest</h1>
+      <p class="subtitle">
+        Complete your shift by answering simple health and safety questions.
+        Hazards move toward the nurse. Answer before they reach her. Correct answers spray the hazard away. Wrong or slow answers lose a life.
+      </p>
+	<div class="hero-actions">
+  <button class="btn primary" id="startBtn" type="button">Start defence shift</button>
+  <button class="btn secondary" id="practiceBtn" type="button">Practice mode</button>
+  <a class="btn pdf-btn" href="Health%20Safety%20and%20Wellbeing%20Policy.pdf" target="_blank" rel="noopener">
+    📄 Open H&S Policy
+  </a>
+</div>
+    </section>
+
+    <div class="layout">
+      <section class="game-shell" aria-label="Game area">
+        <div class="game-stage" id="gameStage">
+          <div class="status-bubble" id="statusBubble">Tap Start shift when you’re ready.</div>
+
+          <div class="cloud c1"></div>
+<div class="cloud c2"></div>
+
+<div class="runner" id="runner" aria-label="Running nurse character">
+  <img id="runnerRun" class="runner-img runner-run is-visible" src="runningnurse.gif" alt="">
+  <img id="runnerFire" class="runner-img runner-fire" src="nursefire.gif" alt="">
+</div>
+  <img id="runnerFire" class="runner-img" src="nursefire.gif" alt="">
+</div>
+
+
+<div class="threat" id="threat" aria-hidden="true">
+  <div class="bacteria-face">
+    <span class="bacteria-emoji" id="hazardEmoji">🦠</span>
+  </div>
+  <div class="threat-label" id="hazardLabel">Germ zone</div>
+</div>
+
+<div class="germ-explosion" id="germExplosion" aria-hidden="true">
+  <span>✨</span>
+  <span>💥</span>
+  <span>✨</span>
+</div>
+
+<div class="beam-shot" id="spray" aria-hidden="true"></div>
+	<div class="mini-hazard" aria-hidden="true">🧤</div>
+	<div class="mini-hazard second" aria-hidden="true">🧼</div>
+	<div class="floor"></div>
+        </div>
+
+        <div class="question-panel">
+          <div class="progress-wrap" aria-label="Shift progress">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+
+          <article class="question-card">
+            <div class="question-top">
+              <span class="pill" id="categoryPill">🦺 Safety Basics</span>
+              <span class="q-count" id="questionCount">0 / 0</span>
+            </div>
+
+            <div class="question" id="questionText">Press Start shift to load the first question.</div>
+            <div class="answers" id="answers"></div>
+            <div class="feedback" id="feedback">Tip: the questions are meant to be easy, fast, and phone friendly.</div>
+          </article>
+        </div>
+      </section>
+
+      <aside>
+        <div class="top-stats" aria-label="Game statistics">
+          <div class="stat"><strong id="score">0</strong><span>Score</span></div>
+          <div class="stat"><strong id="streak">0</strong><span>Streak</span></div>
+          <div class="stat"><strong id="bestScore">0</strong><span>Best</span></div>
+          <div class="stat"><strong id="lives">1</strong><span>Lives</span></div>
+        </div>
+
+        <div class="badges" aria-label="Badges">
+          <div class="badge" data-badge="ppe"><span class="emoji">😷</span><span>PPE Pro</span></div>
+          <div class="badge" data-badge="report"><span class="emoji">📝</span><span>Incident Reporter</span></div>
+          <div class="badge" data-badge="manual"><span class="emoji">💪</span><span>Manual Handling Hero</span></div>
+          <div class="badge" data-badge="hygiene"><span class="emoji">🧼</span><span>Hand Hygiene Star</span></div>
+          <div class="badge" data-badge="hazard"><span class="emoji">⚠️</span><span>Hazard Spotter</span></div>
+          <div class="badge" data-badge="champion"><span class="emoji">🏆</span><span>Safety Champion</span></div>
+        </div>
+
+        <section class="settings">
+          <details>
+            <summary>Edit placeholder policy questions</summary>
+            <div class="editor">
+              <p class="tiny-note">
+                Paste your real policy questions here later. Keep the same JSON shape.
+                The correct answer is the option number starting from 0.
+              </p>
+              <textarea id="questionEditor" spellcheck="false"></textarea>
+              <button class="btn yellow" id="saveQuestionsBtn" type="button">Save question set</button>
+              <button class="btn" id="resetQuestionsBtn" type="button">Reset sample questions</button>
+            </div>
+          </details>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <div class="modal" id="endModal" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+    <div class="modal-card">
+      <h2 id="endTitle">Shift complete!</h2>
+      <p id="endMessage">You completed the shift. Safety Champion 🩺✨</p>
+
+      <div class="hero-actions">
+        <button class="btn primary" id="playAgainBtn" type="button">Play again</button>
+        <button class="btn secondary" id="closeModalBtn" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Saved.</div>
+
+  <script>
+    const sampleQuestions = [
+  {
+    category: "🧡 Everyone's Responsibility",
+    badge: "champion",
+    hazardEmoji: "👥",
+    hazardLabel: "Shared duty",
+    question: "Who is responsible for workplace health, safety and wellbeing?",
+    options: [
+      "Everyone in the workplace",
+      "Only managers",
+      "Only Health and Safety representatives"
+    ],
+    correct: 0,
+    explanation: "Correct. Workplace health, safety and wellbeing is everyone's responsibility."
+  },
+  {
+    category: "⚠️ Hazard Reporting",
+    badge: "hazard",
+    hazardEmoji: "⚠️",
+    hazardLabel: "Unreported hazard",
+    question: "If you notice a workplace hazard, what should you do?",
+    options: [
+      "Report it to your supervisor",
+      "Ignore it if no one is hurt yet",
+      "Wait until the next staff meeting"
+    ],
+    correct: 0,
+    explanation: "Correct. Workers should identify and report workplace hazards to their supervisor."
+  },
+  {
+    category: "📝 Incident Reporting",
+    badge: "report",
+    hazardEmoji: "📋",
+    hazardLabel: "Near miss",
+    question: "Should near misses be reported?",
+    options: [
+      "Yes, because they could have caused harm",
+      "No, because no one was injured",
+      "Only if a patient complains"
+    ],
+    correct: 0,
+    explanation: "Correct. Near misses must be reported because they had the potential to cause injury, illness, damage or loss."
+  },
+  {
+    category: "🦺 PPE",
+    badge: "ppe",
+    hazardEmoji: "🧤",
+    hazardLabel: "Missing PPE",
+    question: "What should be used when PPE is required for a task?",
+    options: [
+      "The right PPE that is fit for purpose",
+      "Any PPE nearby",
+      "PPE only if the task feels risky"
+    ],
+    correct: 0,
+    explanation: "Correct. The right equipment, including PPE, should be provided, fit for purpose, and maintained."
+  },
+  {
+    category: "🎓 Training",
+    badge: "champion",
+    hazardEmoji: "📚",
+    hazardLabel: "No induction",
+    question: "Before doing work tasks, workers should be:",
+    options: [
+      "Inducted, supervised, trained, or given enough information",
+      "Expected to figure it out alone",
+      "Allowed to start without guidance"
+    ],
+    correct: 0,
+    explanation: "Correct. Workers should be appropriately inducted, supervised, and trained to do tasks safely."
+  },
+  {
+    category: "💪 Worker Duties",
+    badge: "manual",
+    hazardEmoji: "🧍",
+    hazardLabel: "Unsafe action",
+    question: "Workers must take reasonable care for:",
+    options: [
+      "Their own safety and the safety of others",
+      "Only their own safety",
+      "Only patient safety, not staff safety"
+    ],
+    correct: 0,
+    explanation: "Correct. Workers must take reasonable care for their own health and safety and avoid affecting others' safety."
+  },
+  {
+    category: "📣 Speak Up",
+    badge: "hazard",
+    hazardEmoji: "💬",
+    hazardLabel: "Silent risk",
+    question: "Workers are encouraged to participate in:",
+    options: [
+      "Identifying and managing health, safety and wellbeing risks",
+      "Ignoring risks unless asked",
+      "Leaving risk decisions only to senior leaders"
+    ],
+    correct: 0,
+    explanation: "Correct. Workers are engaged to participate in identifying and managing risks and solutions."
+  },
+  {
+    category: "🧠 Wellbeing",
+    badge: "champion",
+    hazardEmoji: "🧠",
+    hazardLabel: "Psychosocial risk",
+    question: "In this policy, health includes:",
+    options: [
+      "Physical and mental health",
+      "Only physical injuries",
+      "Only sickness absence"
+    ],
+    correct: 0,
+    explanation: "Correct. The policy states that health means physical and mental health."
+  },
+  {
+    category: "🛠️ Risk Control",
+    badge: "hazard",
+    hazardEmoji: "🛠️",
+    hazardLabel: "Uncontrolled risk",
+    question: "When a risk is identified, the aim is to:",
+    options: [
+      "Eliminate it or minimise it as far as reasonably practicable",
+      "Accept it without changes",
+      "Only discuss it if someone is injured"
+    ],
+    correct: 0,
+    explanation: "Correct. The policy focuses on eliminating or minimising health, safety and wellbeing risks."
+  },
+  {
+    category: "🔍 Risk Assessment",
+    badge: "hazard",
+    hazardEmoji: "🔍",
+    hazardLabel: "Risk check",
+    question: "What is the first step in a risk assessment?",
+    options: [
+      "Identify hazards",
+      "Buy more equipment",
+      "Wait for an incident"
+    ],
+    correct: 0,
+    explanation: "Correct. The risk assessment process starts by identifying hazards."
+  },
+  {
+    category: "✅ Controls",
+    badge: "champion",
+    hazardEmoji: "✅",
+    hazardLabel: "Control check",
+    question: "After putting controls in place, what should happen next?",
+    options: [
+      "Review and monitor the controls",
+      "Forget about the risk",
+      "Remove the control immediately"
+    ],
+    correct: 0,
+    explanation: "Correct. Controls should be reviewed and monitored to ensure they are working."
+  },
+  {
+    category: "👥 H&S Representatives",
+    badge: "report",
+    hazardEmoji: "👥",
+    hazardLabel: "Need support",
+    question: "Health and Safety Representatives help by:",
+    options: [
+      "Representing workers on health and safety matters",
+      "Replacing all managers",
+      "Stopping workers from reporting concerns"
+    ],
+    correct: 0,
+    explanation: "Correct. HSRs are elected and trained to represent workers in health and safety matters."
+  },
+  {
+    category: "🗓️ H&S Committee",
+    badge: "champion",
+    hazardEmoji: "🗓️",
+    hazardLabel: "Committee meeting",
+    question: "How often does the Health and Safety Committee meet at minimum?",
+    options: [
+      "At least every 6 months",
+      "Every 5 years",
+      "Only after a serious incident"
+    ],
+    correct: 0,
+    explanation: "Correct. The Health and Safety Committee meets at least every 6 months."
+  },
+  {
+    category: "🚨 Notifiable Event",
+    badge: "report",
+    hazardEmoji: "🚨",
+    hazardLabel: "Serious event",
+    question: "A notifiable event is:",
+    options: [
+      "A serious health and safety incident that must be reported to WorkSafe",
+      "Any small paper cut",
+      "A normal staff meeting update"
+    ],
+    correct: 0,
+    explanation: "Correct. A notifiable event is a serious incident that must be reported to WorkSafe."
+  },
+  {
+    category: "🏢 WorkSafe",
+    badge: "report",
+    hazardEmoji: "🏢",
+    hazardLabel: "Regulator request",
+    question: "If WorkSafe requests access or information, who should be contacted?",
+    options: [
+      "The AOHSM",
+      "Any staff member nearby",
+      "No one"
+    ],
+    correct: 0,
+    explanation: "Correct. The AOHSM should be contacted before access or information release is coordinated."
+  },
+  {
+    category: "🧾 Information Release",
+    badge: "report",
+    hazardEmoji: "📄",
+    hazardLabel: "Info request",
+    question: "Can information be released to a regulator without AOHSM approval?",
+    options: [
+      "No",
+      "Yes, always",
+      "Only if the clinic is busy"
+    ],
+    correct: 0,
+    explanation: "Correct. Information must not be released without AOHSM approval."
+  },
+  {
+    category: "🏥 Visitors",
+    badge: "champion",
+    hazardEmoji: "🚶",
+    hazardLabel: "Visitor safety",
+    question: "Visitors must:",
+    options: [
+      "Take reasonable care and follow reasonable requests",
+      "Ignore safety instructions",
+      "Enter any area without asking"
+    ],
+    correct: 0,
+    explanation: "Correct. Visitors must take reasonable care, not put others at risk, and comply with reasonable requests."
+  },
+  {
+    category: "📌 Meetings",
+    badge: "champion",
+    hazardEmoji: "📌",
+    hazardLabel: "H&S agenda",
+    question: "Health and safety should be:",
+    options: [
+      "A standard agenda item at staff meetings",
+      "Discussed only once a year",
+      "Left out unless there is an emergency"
+    ],
+    correct: 0,
+    explanation: "Correct. Health, safety and wellbeing is a standard agenda item at staff meetings."
+  }
+];
+
+    const state = {
+  questions: [],
+  index: 0,
+  score: 0,
+  streak: 0,
+  lives: 1,
+  active: false,
+  practice: false,
+  answered: false,
+  threatTimer: null,
+  unlocked: new Set()
+};
+
+    const els = {
+      startBtn: document.getElementById('startBtn'),
+      practiceBtn: document.getElementById('practiceBtn'),
+      runner: document.getElementById('runner'),
+	runnerRun: document.getElementById('runnerRun'),
+	runnerFire: document.getElementById('runnerFire'),
+	threat: document.getElementById('threat'),
+	spray: document.getElementById('spray'),
+	germExplosion: document.getElementById('germExplosion'),
+      statusBubble: document.getElementById('statusBubble'),
+      progressBar: document.getElementById('progressBar'),
+      categoryPill: document.getElementById('categoryPill'),
+      questionCount: document.getElementById('questionCount'),
+      questionText: document.getElementById('questionText'),
+      answers: document.getElementById('answers'),
+      feedback: document.getElementById('feedback'),
+      hazardEmoji: document.getElementById('hazardEmoji'),
+      hazardLabel: document.getElementById('hazardLabel'),
+      score: document.getElementById('score'),
+      streak: document.getElementById('streak'),
+      bestScore: document.getElementById('bestScore'),
+      lives: document.getElementById('lives'),
+      endModal: document.getElementById('endModal'),
+      endTitle: document.getElementById('endTitle'),
+      endMessage: document.getElementById('endMessage'),
+      playAgainBtn: document.getElementById('playAgainBtn'),
+      closeModalBtn: document.getElementById('closeModalBtn'),
+      questionEditor: document.getElementById('questionEditor'),
+      saveQuestionsBtn: document.getElementById('saveQuestionsBtn'),
+      resetQuestionsBtn: document.getElementById('resetQuestionsBtn'),
+      toast: document.getElementById('toast')
+    };
+
+    function cloneQuestions(list) {
+      return JSON.parse(JSON.stringify(list));
+    }
+
+    function loadQuestions() {
+      const saved = localStorage.getItem('nurseSafetyQuest.questions');
+
+      if (!saved) {
+        return cloneQuestions(sampleQuestions);
+      }
+
+      try {
+        const parsed = JSON.parse(saved);
+
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          throw new Error('Question set must be a non-empty array.');
+        }
+
+        parsed.forEach(validateQuestion);
+        return parsed;
+      } catch (err) {
+        console.warn(err);
+        localStorage.removeItem('nurseSafetyQuest.questions');
+        return cloneQuestions(sampleQuestions);
+      }
+    }
+
+    function validateQuestion(q) {
+      if (!q || typeof q.question !== 'string' || !Array.isArray(q.options)) {
+        throw new Error('Invalid question format.');
+      }
+
+      if (typeof q.correct !== 'number' || !q.options[q.correct]) {
+        throw new Error('Invalid correct answer index.');
+      }
+    }
+
+    function shuffle(array) {
+      const copy = [...array];
+
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+
+      return copy;
+    }
+
+    function startGame(practice = false) {
+      state.questions = shuffle(loadQuestions()).filter(Boolean);
+
+      if (!state.questions.length) {
+        setStatus('No questions found. Reset the sample questions first.');
+        return;
+      }
+
+      state.index = 0;
+      state.score = 0;
+      state.streak = 0;
+      state.lives = practice ? 5 : 3;
+      state.practice = practice;
+      state.active = true;
+      state.answered = false;
+      state.unlocked = new Set();
+
+      els.endModal.classList.remove('show');
+      document.querySelectorAll('.badge').forEach(badge => badge.classList.remove('unlocked'));
+
+      setStatus(practice ? 'Practice mode: stop the hazards before they reach the nurse.' : 'Shift started. Answer before the hazard reaches the nurse.');
+      updateStats();
+      renderQuestion();
+      restartThreat();
+    }
+
+    function renderQuestion() {
+      const q = state.questions[state.index];
+
+      if (!q) {
+        setStatus('Question missing. Reset the sample questions.');
+        return;
+      }
+
+      state.answered = false;
+
+      els.categoryPill.textContent = q.category || '🦺 Safety Basics';
+      els.questionCount.textContent = `${state.index + 1} / ${state.questions.length}`;
+      els.questionText.textContent = q.question;
+
+      if (els.hazardEmoji) {
+        els.hazardEmoji.textContent = q.hazardEmoji || pickHazardEmoji(q.category || q.question);
+      }
+
+      if (els.hazardLabel) {
+        els.hazardLabel.textContent = q.hazardLabel || pickHazardLabel(q.category || q.question);
+      }
+
+      els.feedback.className = 'feedback';
+      els.feedback.textContent = 'Choose the safest answer.';
+      els.answers.innerHTML = '';
+
+      q.options.forEach((option, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer';
+        btn.type = 'button';
+        btn.innerHTML = `<span>${escapeHtml(option)}</span><span aria-hidden="true">›</span>`;
+        btn.addEventListener('click', () => answerQuestion(idx));
+        els.answers.appendChild(btn);
+      });
+
+      const progress = (state.index / state.questions.length) * 100;
+      els.progressBar.style.width = `${progress}%`;
+    }
+
+    function answerQuestion(selected) {
+      if (!state.active || state.answered) return;
+
+      state.answered = true;
+
+      const q = state.questions[state.index];
+      const answerButtons = [...document.querySelectorAll('.answer')];
+      const isCorrect = selected === q.correct;
+
+      answerButtons.forEach((btn, idx) => {
+        btn.disabled = true;
+
+        if (idx === q.correct) {
+          btn.classList.add('correct');
+        }
+
+        if (idx === selected && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      if (isCorrect) {
+        state.score += 10 + Math.min(state.streak * 2, 10);
+        state.streak += 1;
+        unlockBadge(q.badge);
+		shootThreat();
+
+		els.feedback.className = 'feedback good';
+		els.feedback.textContent = q.explanation || 'Correct. Safe choice.';
+
+		setStatus('Nice. Hazard stopped.');
+        updateStats();
+
+        setTimeout(nextQuestion, 1100);
+      } else {
+        state.streak = 0;
+        state.lives -= 1;
+        threatHitsNurse();
+
+		els.feedback.className = 'feedback bad';
+		els.feedback.textContent = `Oops. Correct answer: ${q.options[q.correct]}. ${q.explanation || ''}`;
+
+		setStatus(state.lives > 0 ? 'The hazard got through. Try the next one.' : 'Shift ended. The hazard reached the nurse.');
+        updateStats();
+
+        if (state.lives > 0) {
+          setTimeout(nextQuestion, 1200);
+        } else {
+          setTimeout(() => endGame(false), 1200);
+        }
+      }
+    }
+
+    function nextQuestion() {
+      state.index += 1;
+
+      if (state.index >= state.questions.length) {
+        endGame(true);
+        return;
+      }
+
+      renderQuestion();
+      restartThreat();
+    }
+
+    function endGame(completed) {
+      state.active = false;
+	  clearTimeout(state.threatTimer);
+	  
+      els.progressBar.style.width = completed ? '100%' : `${(state.index / Math.max(state.questions.length, 1)) * 100}%`;
+
+      const best = Math.max(Number(localStorage.getItem('nurseSafetyQuest.bestScore') || 0), state.score);
+      localStorage.setItem('nurseSafetyQuest.bestScore', String(best));
+
+      updateStats();
+
+      if (completed) {
+        unlockBadge('champion');
+        els.endTitle.textContent = 'Shift complete!';
+        els.endMessage.textContent = `You scored ${state.score}. Safety Champion 🩺✨`;
+        setStatus('Shift complete. Safety Champion unlocked.');
+      } else {
+        els.endTitle.textContent = 'Shift ended';
+        els.endMessage.textContent = `You scored ${state.score}. Try again and beat your best score.`;
+      }
+
+      els.endModal.classList.add('show');
+    }
+
+    function jumpRunner() {
+      els.runner.classList.add('jump');
+
+      setTimeout(() => {
+        els.runner.classList.remove('jump');
+      }, 560);
+    }
+
+    function bumpRunner() {
+      els.runner.animate([
+        { transform: 'translateX(0) rotate(0)' },
+        { transform: 'translateX(-8px) rotate(-6deg)' },
+        { transform: 'translateX(6px) rotate(4deg)' },
+        { transform: 'translateX(0) rotate(0)' }
+      ], {
+        duration: 360,
+        easing: 'ease-out'
+      });
+    }
+	
+	function explodeGerm() {
+  if (!els.threat || !els.germExplosion) return;
+
+  const threatRect = els.threat.getBoundingClientRect();
+  const stageRect = els.threat.parentElement.getBoundingClientRect();
+
+  const centerX = threatRect.left - stageRect.left + threatRect.width / 2;
+  const centerY = threatRect.top - stageRect.top + threatRect.height / 2;
+
+  els.germExplosion.style.left = `${centerX}px`;
+  els.germExplosion.style.top = `${centerY}px`;
+
+  els.germExplosion.classList.remove('active');
+  void els.germExplosion.offsetWidth;
+  els.germExplosion.classList.add('active');
+}
+
+	function shootThreat() {
+  clearTimeout(state.threatTimer);
+
+  if (els.threat) {
+    const rect = els.threat.getBoundingClientRect();
+    const parentRect = els.threat.parentElement.getBoundingClientRect();
+
+    els.threat.style.animation = 'none';
+    els.threat.style.left = `${rect.left - parentRect.left}px`;
+    els.threat.style.right = 'auto';
+    els.threat.classList.remove('hit', 'defeated');
+  }
+
+  // switch to firing nurse GIF
+  if (els.runner) {
+    els.runner.classList.add('firing');
+  }
+
+  // restart firing GIF from first frame
+  if (els.runnerFire) {
+    const fireSrc = els.runnerFire.src;
+    els.runnerFire.src = '';
+    els.runnerFire.src = fireSrc;
+  }
+
+  // fire beam
+  if (els.spray) {
+    els.spray.classList.remove('active');
+    void els.spray.offsetWidth;
+    els.spray.classList.add('active');
+  }
+  
+  // explosion + remove germ after beam reaches it
+setTimeout(() => {
+  explodeGerm();
+
+  if (els.threat) {
+    els.threat.classList.add('defeated');
+  }
+}, 460);
+
+  // switch back to running nurse
+  setTimeout(() => {
+    if (els.runner) {
+      els.runner.classList.remove('firing');
+    }
+  }, 700);
+}
+
+function threatHitsNurse() {
+  clearTimeout(state.threatTimer);
+
+  if (els.threat) {
+    els.threat.style.animation = 'none';
+    els.threat.classList.remove('defeated');
+    els.threat.classList.add('hit');
+  }
+
+  els.runner.animate([
+    { transform: 'translateX(0) rotate(0)' },
+    { transform: 'translateX(-8px) rotate(-5deg)' },
+    { transform: 'translateX(5px) rotate(3deg)' },
+    { transform: 'translateX(0) rotate(0)' }
+  ], {
+    duration: 380,
+    easing: 'ease-out'
+  });
+}
+
+function timeOutHit() {
+  state.answered = true;
+  state.streak = 0;
+  state.lives -= 1;
+
+  const q = state.questions[state.index];
+
+  threatHitsNurse();
+
+  els.feedback.className = 'feedback bad';
+  els.feedback.textContent = `Too slow. The safest answer was: ${q.options[q.correct]}.`;
+
+  setStatus(state.lives > 0 ? 'Too slow. The hazard reached the nurse.' : 'Shift ended. The hazard reached the nurse.');
+
+  updateStats();
+
+  if (state.lives > 0) {
+    setTimeout(nextQuestion, 1200);
+  } else {
+    setTimeout(() => endGame(false), 1200);
+  }
+}
+    function restartThreat() {
+  if (!els.threat) return;
+
+  els.threat.classList.remove('defeated', 'hit');
+  els.threat.style.animation = 'none';
+  els.threat.style.left = '';
+  els.threat.style.right = '-120px';
+
+  if (els.spray) {
+  els.spray.classList.remove('active');
+}
+
+if (els.germExplosion) {
+  els.germExplosion.classList.remove('active');
+}
+
+if (els.runner) {
+  els.runner.classList.remove('firing');
+}
+
+if (els.runner) {
+  els.runner.classList.remove('firing');
+}
+
+  void els.threat.offsetWidth;
+
+  els.threat.style.animation = 'threatMove 10s linear forwards';
+
+  clearTimeout(state.threatTimer);
+
+  state.threatTimer = setTimeout(() => {
+    if (state.active && !state.answered) {
+      timeOutHit();
+    }
+  }, 10000);
+}
+
+    function unlockBadge(name) {
+      if (!name) return;
+
+      state.unlocked.add(name);
+
+      const badge = document.querySelector(`.badge[data-badge="${CSS.escape(name)}"]`);
+
+      if (badge) {
+        badge.classList.add('unlocked');
+      }
+    }
+
+    function updateStats() {
+      els.score.textContent = state.score;
+      els.streak.textContent = state.streak;
+      els.lives.textContent = state.lives;
+      els.bestScore.textContent = localStorage.getItem('nurseSafetyQuest.bestScore') || '0';
+    }
+
+    function setStatus(text) {
+      els.statusBubble.textContent = text;
+    }
+
+    function pickHazardEmoji(text) {
+      const t = String(text).toLowerCase();
+
+      if (t.includes('hand') || t.includes('hygiene') || t.includes('infection')) return '🦠';
+      if (t.includes('ppe') || t.includes('glove') || t.includes('mask')) return '🧤';
+      if (t.includes('wet') || t.includes('spill') || t.includes('floor')) return '💧';
+      if (t.includes('incident') || t.includes('near miss') || t.includes('report')) return '📋';
+      if (t.includes('lift') || t.includes('manual') || t.includes('handling')) return '📦';
+      if (t.includes('fire') || t.includes('alarm') || t.includes('emergency')) return '🚨';
+
+      return '⚠️';
+    }
+
+    function pickHazardLabel(text) {
+      const t = String(text).toLowerCase();
+
+      if (t.includes('hand') || t.includes('hygiene') || t.includes('infection')) return 'Germ zone';
+      if (t.includes('ppe') || t.includes('glove') || t.includes('mask')) return 'Missing PPE';
+      if (t.includes('wet') || t.includes('spill') || t.includes('floor')) return 'Wet floor';
+      if (t.includes('incident') || t.includes('near miss') || t.includes('report')) return 'Near miss';
+      if (t.includes('lift') || t.includes('manual') || t.includes('handling')) return 'Heavy lift';
+      if (t.includes('fire') || t.includes('alarm') || t.includes('emergency')) return 'Alarm';
+
+      return 'Safety hazard';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function showToast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add('show');
+
+      clearTimeout(showToast.timer);
+
+      showToast.timer = setTimeout(() => {
+        els.toast.classList.remove('show');
+      }, 1800);
+    }
+
+    function refreshEditor() {
+      els.questionEditor.value = JSON.stringify(loadQuestions(), null, 2);
+    }
+
+    els.startBtn.addEventListener('click', () => startGame(false));
+    els.practiceBtn.addEventListener('click', () => startGame(true));
+    els.playAgainBtn.addEventListener('click', () => startGame(state.practice));
+    els.closeModalBtn.addEventListener('click', () => els.endModal.classList.remove('show'));
+
+    els.saveQuestionsBtn.addEventListener('click', () => {
+      try {
+        const parsed = JSON.parse(els.questionEditor.value);
+
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          throw new Error('Question set must be a non-empty array.');
+        }
+
+        parsed.forEach(validateQuestion);
+        localStorage.setItem('nurseSafetyQuest.questions', JSON.stringify(parsed));
+        showToast('Question set saved on this device.');
+      } catch (err) {
+        showToast(`Could not save: ${err.message}`);
+      }
+    });
+
+    els.resetQuestionsBtn.addEventListener('click', () => {
+      localStorage.removeItem('nurseSafetyQuest.questions');
+      refreshEditor();
+      showToast('Sample questions restored.');
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !state.active) {
+        startGame(false);
+      }
+    });
+
+    refreshEditor();
+    updateStats();
+  </script>
+</body>
+</html>
