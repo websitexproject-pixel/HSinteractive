@@ -637,6 +637,48 @@
       transition: width .25s ease;
     }
 
+.danger-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.danger-nurse {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.danger-line {
+  position: relative;
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(60,70,100,.10);
+  overflow: hidden;
+  border: 1px solid rgba(60,70,100,.08);
+}
+
+.danger-germ {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  animation: dangerMove 10s linear forwards;
+}
+
+@keyframes dangerMove {
+  from {
+    right: 4px;
+  }
+
+  to {
+    right: calc(100% - 24px);
+  }
+}
+
     
 .question-card {
   padding: 12px;
@@ -1063,6 +1105,13 @@ h1 {
             <div class="progress-bar" id="progressBar"></div>
           </div>
 
+    <div class="danger-track">
+  <span class="danger-nurse">👩‍⚕️</span>
+  <div class="danger-line">
+    <div class="danger-germ" id="dangerGerm">🦠</div>
+  </div>
+</div>
+
           <article class="question-card">
             <div class="question-top">
               <span class="pill" id="categoryPill">🦺 Safety Basics</span>
@@ -1440,7 +1489,8 @@ h1 {
       endMessage: document.getElementById('endMessage'),
       playAgainBtn: document.getElementById('playAgainBtn'),
       closeModalBtn: document.getElementById('closeModalBtn'),
-      toast: document.getElementById('toast')
+      toast: document.getElementById('toast'),
+      dangerGerm: document.getElementById('dangerGerm')
     };
 
     function cloneQuestions(list) {
@@ -1818,6 +1868,13 @@ if (els.runner) {
 
   els.threat.style.animation = 'threatMove 10s linear forwards';
 
+if (els.dangerGerm) {
+  els.dangerGerm.style.animation = 'none';
+  void els.dangerGerm.offsetWidth;
+  els.dangerGerm.style.animation = 'dangerMove 10s linear forwards';
+}
+
+   
   clearTimeout(state.threatTimer);
 
   state.threatTimer = setTimeout(() => {
