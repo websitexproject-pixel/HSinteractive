@@ -85,6 +85,10 @@
       backdrop-filter: blur(18px);
       overflow: hidden;
     }
+	
+	.hero.is-hidden {
+  display: none;
+}
 
     .hero::after {
       content: "🩺";
@@ -1022,7 +1026,7 @@ h1 {
 
 <body>
   <main class="app">
-    <section class="hero" aria-label="Nurse Safety Quest introduction">
+      <section class="hero" id="heroIntro" aria-label="Nurse Safety Quest introduction">
       <span class="kicker">🏥 QR phone game • easy policy competition</span>
       <h1>Nurse Safety Quest</h1>
       <p class="subtitle">
@@ -1039,7 +1043,7 @@ h1 {
     </section>
 
     <div class="layout">
-      <section class="game-shell" aria-label="Game area">
+      <section class="game-shell" id="gameArea" aria-label="Game area">
         <div class="game-stage" id="gameStage">
           <div class="status-bubble" id="statusBubble">Tap Start shift when you’re ready.</div>
 
@@ -1399,8 +1403,10 @@ h1 {
 };
 
     const els = {
-      startBtn: document.getElementById('startBtn'),
-      practiceBtn: document.getElementById('practiceBtn'),
+  heroIntro: document.getElementById('heroIntro'),
+  gameArea: document.getElementById('gameArea'),
+  startBtn: document.getElementById('startBtn'),
+  practiceBtn: document.getElementById('practiceBtn'),
       runner: document.getElementById('runner'),
 	runnerRun: document.getElementById('runnerRun'),
 	runnerFire: document.getElementById('runnerFire'),
@@ -1474,7 +1480,22 @@ h1 {
       }
 
       return copy;
+    }  
+	
+	function focusGameArea() {
+  if (els.heroIntro) {
+    els.heroIntro.classList.add('is-hidden');
+  }
+
+  requestAnimationFrame(() => {
+    if (els.gameArea) {
+      els.gameArea.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
     }
+  });
+}
 
     function startGame(practice = false) {
       state.questions = shuffle(loadQuestions()).filter(Boolean);
@@ -1497,9 +1518,10 @@ h1 {
       document.querySelectorAll('.badge').forEach(badge => badge.classList.remove('unlocked'));
 
       setStatus(practice ? 'Practice mode: stop the hazards before they reach the nurse.' : 'Shift started. Answer before the hazard reaches the nurse.');
-      updateStats();
-      renderQuestion();
-      restartThreat();
+updateStats();
+renderQuestion();
+restartThreat();
+focusGameArea();
     }
 
     function renderQuestion() {
