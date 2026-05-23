@@ -443,26 +443,7 @@
   text-align: center;
   box-shadow: 0 10px 18px rgba(60,70,100,.08);
 }
-.beam-shot {
-  position: absolute;
-  left: 135px;
-  bottom: 200px;
-  width: 0;
-  height: 10px;
-  border-radius: 999px;
-  opacity: 0;
-  z-index: 7;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    rgba(216,238,223,.15),
-    rgba(58,159,123,.95),
-    rgba(216,238,223,.2)
-  );
-  box-shadow:
-    0 0 14px rgba(58,159,123,.65),
-    0 0 30px rgba(58,159,123,.28);
-}
+
 
 .germ-explosion {
   position: absolute;
@@ -1749,12 +1730,6 @@ btn.addEventListener('click', () => answerQuestion(choice.originalIndex));
     els.runnerFire.src = fireSrc;
   }
 
-  // fire beam
-  if (els.spray) {
-    els.spray.classList.remove('active');
-    void els.spray.offsetWidth;
-    els.spray.classList.add('active');
-  }
   
   // explosion + remove germ after beam reaches it
 setTimeout(() => {
@@ -1763,7 +1738,7 @@ setTimeout(() => {
   if (els.threat) {
     els.threat.classList.add('defeated');
   }
-}, 460);
+}, 250);
 
   // switch back to running nurse
   setTimeout(() => {
