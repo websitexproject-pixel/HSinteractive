@@ -218,7 +218,174 @@
       backdrop-filter: blur(18px);
       overflow: hidden;
     }
+	
+	.battle-hud {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 10px;
+  z-index: 12;
+  pointer-events: none;
+}
 
+.hud-lives {
+  position: absolute;
+  right: 0;
+  top: 0;
+  min-width: 86px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.84);
+  border: 1px solid rgba(68,78,120,.14);
+  box-shadow: 0 10px 22px rgba(60,70,100,.12);
+  backdrop-filter: blur(10px);
+  font-size: 17px;
+  line-height: 1;
+  letter-spacing: -2px;
+  text-align: center;
+}
+
+.hud-danger {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 190px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 6px;
+  align-items: center;
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(68,78,120,.14);
+  box-shadow: 0 10px 22px rgba(60,70,100,.12);
+  backdrop-filter: blur(10px);
+}
+
+.hud-label {
+  font-size: 9px;
+  font-weight: 900;
+  color: rgba(47,51,64,.62);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.hud-bar {
+  position: relative;
+  height: 12px;
+  min-width: 70px;
+  border-radius: 999px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(216,238,223,.95), rgba(253,241,201,.95), rgba(254,220,219,.95));
+  border: 1px solid rgba(60,70,100,.12);
+}
+
+
+.hud-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255,255,255,.35) 0 10px,
+    rgba(255,255,255,.08) 10px 20px
+  );
+}
+
+.hud-germ {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  line-height: 1;
+  animation: hudDangerMove 10s linear forwards;
+}
+
+@keyframes hudDangerMove {
+  from {
+    right: 4px;
+  }
+
+  to {
+    right: calc(100% - 22px);
+  }
+}
+
+.stage-result {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: none;
+  place-items: center;
+  padding: 18px;
+  background: transparent;
+  pointer-events: none;
+}
+
+.stage-result.show {
+  display: grid;
+}
+
+.stage-result-card {
+  width: min(300px, 82%);
+  padding: 14px 14px;
+  border-radius: 24px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  box-shadow: 0 18px 40px rgba(60,70,100,.14);
+  backdrop-filter: blur(8px);
+  animation: resultPop .35s ease-out;
+  pointer-events: auto;
+
+  /* this keeps the card in the middle but slightly above nurse body */
+  transform: translateY(-22px);
+}
+
+.stage-result-title {
+  font-size: clamp(30px, 8vw, 48px);
+  line-height: .9;
+  font-weight: 950;
+  letter-spacing: -0.06em;
+  color: #2f3340;
+  text-shadow:
+    0 2px 0 rgba(216,238,223,.95),
+    0 8px 20px rgba(255,255,255,.85);
+}
+
+.stage-result-message {
+  margin-top: 8px;
+  color: rgba(47,51,64,.72);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.stage-result-btn {
+  margin-top: 12px;
+  border: 1px solid rgba(68,78,120,.14);
+  border-radius: 999px;
+  padding: 10px 17px;
+  background: rgba(255,255,255,.72);
+  color: var(--ink);
+  font-weight: 900;
+  box-shadow: 0 10px 24px rgba(60,70,100,.12);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes resultPop {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px) scale(.84);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(-22px) scale(1);
+  }
+}
     .game-stage {
       position: relative;
       height: min(55vh, 440px);
@@ -398,6 +565,66 @@
       45% { transform: translateY(-18px) rotate(-5deg) scale(1.05); }
       100% { transform: translateY(0) rotate(1deg) scale(1); }
     }
+
+/* sad nurse */
+.runner-sad {
+  left: 34px;
+  bottom: 0;
+  width: 118px;
+  height: 184px;
+}
+
+.runner.sad #runnerRun,
+.runner.sad #runnerFire {
+  opacity: 0;
+}
+
+.runner.sad #runnerSad {
+  opacity: 1;
+}
+.runner.sad {
+  animation: sadDrop .35s ease-out;
+}
+
+@keyframes sadDrop {
+  0% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+/* win nurse */
+.runner-win {
+  left: 28px;
+  bottom: -4px;
+  width: 115px;
+  height: 180px;
+}
+
+.runner.win #runnerRun,
+.runner.win #runnerFire,
+.runner.win #runnerSad {
+  opacity: 0;
+}
+
+.runner.win #runnerWin {
+  opacity: 1;
+}
+
+.runner.win {
+  animation: winBounce .55s ease-in-out infinite alternate;
+}
+
+@keyframes winBounce {
+  from {
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    transform: translateY(-10px) scale(1.03);
+  }
+}
 
     .threat {
   position: absolute;
@@ -601,7 +828,7 @@
     .status-bubble {
       position: absolute;
       left: 18px;
-      top: 16px;
+      top: 54px;
       max-width: calc(100% - 36px);
       border: 1px solid var(--line);
       border-radius: 18px;
@@ -968,6 +1195,26 @@
 
     @media (max-width: 420px) {
 	
+	.stage-result-card {
+  width: min(250px, 78%);
+  padding: 12px 10px;
+  border-radius: 20px;
+  transform: translateY(-18px);
+}
+
+.stage-result-title {
+  font-size: 34px;
+}
+
+.stage-result-message {
+  font-size: 11px;
+}
+
+.stage-result-btn {
+  padding: 9px 14px;
+  font-size: 12px;
+}
+
 	.hero-actions .pdf-btn {
   min-height: 38px;
   font-size: 12px;
@@ -1030,9 +1277,46 @@ h1 {
   height: 160px;
 }
 
-      .runner.jump {
+            .runner.jump {
         bottom: 158px;
         animation: jumpRun .56s ease-out;
+      }
+
+      .battle-hud {
+  left: 8px;
+  right: 8px;
+  top: 8px;
+}
+
+.hud-lives {
+  right: 0;
+  top: 0;
+  min-width: 72px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
+.hud-danger {
+  left: 0;
+  top: 0;
+  width: 150px;
+  padding: 6px 7px;
+  gap: 5px;
+}
+
+.hud-label {
+  font-size: 7px;
+}
+
+.hud-bar {
+  min-width: 46px;
+  height: 11px;
+}
+
+      .status-bubble {
+        top: 48px;
+        font-size: 11px;
+        padding: 8px 10px;
       }
     }
 
@@ -1068,49 +1352,65 @@ h1 {
     <div class="layout">
       <section class="game-shell" id="gameArea" aria-label="Game area">
         <div class="game-stage" id="gameStage">
-          <div class="status-bubble" id="statusBubble">Tap Start shift when you’re ready.</div>
 
-          <div class="cloud c1"></div>
-<div class="cloud c2"></div>
+  <div class="battle-hud" aria-label="Battle status">
+    <div class="hud-lives" id="stageLives">❤️❤️❤️</div>
 
-<div class="runner" id="runner" aria-label="Running nurse character">
-  <img id="runnerRun" class="runner-img runner-run is-visible" src="runningnurse.gif" alt="">
-  <img id="runnerFire" class="runner-img runner-fire" src="nursefire.gif" alt="">
-</div>
-  <img id="runnerFire" class="runner-img" src="nursefire.gif" alt="">
-</div>
-
-
-<div class="threat" id="threat" aria-hidden="true">
-  <div class="bacteria-face">
-    <span class="bacteria-emoji" id="hazardEmoji">🦠</span>
+    <div class="hud-danger">
+      <span class="hud-label">Nurse</span>
+      <div class="hud-bar">
+        <div class="hud-germ" id="stageDangerGerm">🦠</div>
+      </div>
+      <span class="hud-label">Hazard</span>
+    </div>
   </div>
-  <div class="threat-label" id="hazardLabel">Germ zone</div>
-</div>
 
-<div class="germ-explosion" id="germExplosion" aria-hidden="true">
-  <span>✨</span>
-  <span>💥</span>
-  <span>✨</span>
-</div>
+  <div class="status-bubble" id="statusBubble">Tap Start shift when you’re ready.</div>
 
-<div class="beam-shot" id="spray" aria-hidden="true"></div>
-	<div class="mini-hazard" aria-hidden="true">🧤</div>
-	<div class="mini-hazard second" aria-hidden="true">🧼</div>
-	<div class="floor"></div>
-        </div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+
+  <div class="runner" id="runner" aria-label="Nurse character">
+    <img id="runnerRun" class="runner-img runner-run is-visible" src="runningnurse.gif" alt="">
+    <img id="runnerFire" class="runner-img runner-fire" src="nursefire.gif" alt="">
+    <img id="runnerSad" class="runner-img runner-sad" src="sadnurse.webp" alt="">
+    <img id="runnerWin" class="runner-img runner-win" src="nursewin.webp" alt="">
+  </div>
+
+  <div class="threat" id="threat" aria-hidden="true">
+    <div class="bacteria-face">
+      <span class="bacteria-emoji" id="hazardEmoji">🦠</span>
+    </div>
+    <div class="threat-label" id="hazardLabel">Germ zone</div>
+  </div>
+
+  <div class="germ-explosion" id="germExplosion" aria-hidden="true">
+    <span>✨</span>
+    <span>💥</span>
+    <span>✨</span>
+  </div>
+
+  <div class="beam-shot" id="spray" aria-hidden="true"></div>
+
+  <div class="mini-hazard" aria-hidden="true">🧤</div>
+  <div class="mini-hazard second" aria-hidden="true">🧼</div>
+
+  <div class="floor"></div>
+
+  <div class="stage-result" id="stageResult" aria-live="polite">
+    <div class="stage-result-card">
+      <div class="stage-result-title" id="stageResultTitle">YOU WIN!</div>
+      <div class="stage-result-message" id="stageResultMessage">Safety Champion 🩺✨</div>
+      <button class="stage-result-btn" id="stagePlayAgainBtn" type="button">Play again</button>
+    </div>
+  </div>
+
+</div>
 
         <div class="question-panel">
           <div class="progress-wrap" aria-label="Shift progress">
             <div class="progress-bar" id="progressBar"></div>
           </div>
-
-    <div class="danger-track">
-  <span class="danger-nurse">👩‍⚕️</span>
-  <div class="danger-line">
-    <div class="danger-germ" id="dangerGerm">🦠</div>
-  </div>
-</div>
 
           <article class="question-card">
             <div class="question-top">
@@ -1130,7 +1430,7 @@ h1 {
           <div class="stat"><strong id="score">0</strong><span>Score</span></div>
           <div class="stat"><strong id="streak">0</strong><span>Streak</span></div>
           <div class="stat"><strong id="bestScore">0</strong><span>Best</span></div>
-          <div class="stat"><strong id="lives">1</strong><span>Lives</span></div>
+          <div class="stat"><strong id="lives">❤️❤️❤️</strong><span>Lives</span></div>
         </div>
 
         <div class="badges" aria-label="Badges">
@@ -1467,7 +1767,9 @@ h1 {
   practiceBtn: document.getElementById('practiceBtn'),
       runner: document.getElementById('runner'),
 	runnerRun: document.getElementById('runnerRun'),
-	runnerFire: document.getElementById('runnerFire'),
+runnerFire: document.getElementById('runnerFire'),
+runnerSad: document.getElementById('runnerSad'),
+runnerWin: document.getElementById('runnerWin'),
 	threat: document.getElementById('threat'),
 	spray: document.getElementById('spray'),
 	germExplosion: document.getElementById('germExplosion'),
@@ -1484,13 +1786,19 @@ h1 {
       streak: document.getElementById('streak'),
       bestScore: document.getElementById('bestScore'),
       lives: document.getElementById('lives'),
+	  stageResult: document.getElementById('stageResult'),
+	stageResultTitle: document.getElementById('stageResultTitle'),
+	stageResultMessage: document.getElementById('stageResultMessage'),
+	stagePlayAgainBtn: document.getElementById('stagePlayAgainBtn'),
       endModal: document.getElementById('endModal'),
       endTitle: document.getElementById('endTitle'),
       endMessage: document.getElementById('endMessage'),
       playAgainBtn: document.getElementById('playAgainBtn'),
       closeModalBtn: document.getElementById('closeModalBtn'),
       toast: document.getElementById('toast'),
-      dangerGerm: document.getElementById('dangerGerm')
+      dangerGerm: document.getElementById('dangerGerm'),
+	stageLives: document.getElementById('stageLives'),
+	stageDangerGerm: document.getElementById('stageDangerGerm')
     };
 
     function cloneQuestions(list) {
@@ -1556,6 +1864,29 @@ h1 {
   });
 }
 
+function showRunningNurse() {
+  if (!els.runner) return;
+  els.runner.classList.remove('firing', 'sad', 'win');
+}
+
+function showFiringNurse() {
+  if (!els.runner) return;
+  els.runner.classList.remove('sad', 'win');
+  els.runner.classList.add('firing');
+}
+
+function showSadNurse() {
+  if (!els.runner) return;
+  els.runner.classList.remove('firing', 'win');
+  els.runner.classList.add('sad');
+}
+
+function showWinNurse() {
+  if (!els.runner) return;
+  els.runner.classList.remove('firing', 'sad');
+  els.runner.classList.add('win');
+}
+
     function startGame(practice = false) {
       state.questions = shuffle(loadQuestions()).filter(Boolean);
 
@@ -1572,6 +1903,12 @@ h1 {
       state.active = true;
       state.answered = false;
       state.unlocked = new Set();
+
+showRunningNurse();
+
+if (els.stageResult) {
+  els.stageResult.classList.remove('show');
+}
 
       els.endModal.classList.remove('show');
       document.querySelectorAll('.badge').forEach(badge => badge.classList.remove('unlocked'));
@@ -1675,10 +2012,11 @@ btn.addEventListener('click', () => answerQuestion(choice.originalIndex));
         updateStats();
 
         if (state.lives > 0) {
-          setTimeout(nextQuestion, 1200);
-        } else {
-          setTimeout(() => endGame(false), 1200);
-        }
+  setTimeout(nextQuestion, 1200);
+} else {
+  showSadNurse();
+  setTimeout(() => endGame(false), 1200);
+}
       }
     }
 
@@ -1706,16 +2044,35 @@ btn.addEventListener('click', () => answerQuestion(choice.originalIndex));
       updateStats();
 
       if (completed) {
-        unlockBadge('champion');
-        els.endTitle.textContent = 'Shift complete!';
-        els.endMessage.textContent = `You scored ${state.score}. Safety Champion 🩺✨`;
-        setStatus('Shift complete. Safety Champion unlocked.');
-      } else {
-        els.endTitle.textContent = 'Shift ended';
-        els.endMessage.textContent = `You scored ${state.score}. Try again and beat your best score.`;
-      }
+  unlockBadge('champion');
+  showWinNurse();
 
-      els.endModal.classList.add('show');
+  if (els.stageResultTitle) {
+    els.stageResultTitle.textContent = 'YOU WIN!';
+  }
+
+  if (els.stageResultMessage) {
+    els.stageResultMessage.textContent = `Score ${state.score} • Safety Champion 🩺✨`;
+  }
+
+  setStatus('You win! Safety Champion unlocked.');
+} else {
+  showSadNurse();
+
+  if (els.stageResultTitle) {
+    els.stageResultTitle.textContent = 'TRY AGAIN!';
+  }
+
+  if (els.stageResultMessage) {
+    els.stageResultMessage.textContent = `Score ${state.score} • The hazard got through 💔`;
+  }
+
+  setStatus('Try again. The nurse needs another shift.');
+}
+
+if (els.stageResult) {
+  els.stageResult.classList.add('show');
+}
     }
 
     function jumpRunner() {
@@ -1769,9 +2126,7 @@ btn.addEventListener('click', () => answerQuestion(choice.originalIndex));
   }
 
   // switch to firing nurse GIF
-  if (els.runner) {
-    els.runner.classList.add('firing');
-  }
+  showFiringNurse();
 
   // restart firing GIF from first frame
   if (els.runnerFire) {
@@ -1792,9 +2147,7 @@ setTimeout(() => {
 
   // switch back to running nurse
   setTimeout(() => {
-    if (els.runner) {
-      els.runner.classList.remove('firing');
-    }
+    showRunningNurse();
   }, 700);
 }
 
@@ -1835,10 +2188,11 @@ function timeOutHit() {
   updateStats();
 
   if (state.lives > 0) {
-    setTimeout(nextQuestion, 1200);
-  } else {
-    setTimeout(() => endGame(false), 1200);
-  }
+  setTimeout(nextQuestion, 1200);
+} else {
+  showSadNurse();
+  setTimeout(() => endGame(false), 1200);
+}
 }
     function restartThreat() {
   if (!els.threat) return;
@@ -1856,24 +2210,17 @@ if (els.germExplosion) {
   els.germExplosion.classList.remove('active');
 }
 
-if (els.runner) {
-  els.runner.classList.remove('firing');
-}
-
-if (els.runner) {
-  els.runner.classList.remove('firing');
-}
+showRunningNurse();
 
   void els.threat.offsetWidth;
 
   els.threat.style.animation = 'threatMove 10s linear forwards';
 
-if (els.dangerGerm) {
-  els.dangerGerm.style.animation = 'none';
-  void els.dangerGerm.offsetWidth;
-  els.dangerGerm.style.animation = 'dangerMove 10s linear forwards';
+if (els.stageDangerGerm) {
+  els.stageDangerGerm.style.animation = 'none';
+  void els.stageDangerGerm.offsetWidth;
+  els.stageDangerGerm.style.animation = 'hudDangerMove 10s linear forwards';
 }
-
    
   clearTimeout(state.threatTimer);
 
@@ -1897,11 +2244,19 @@ if (els.dangerGerm) {
     }
 
     function updateStats() {
-      els.score.textContent = state.score;
-      els.streak.textContent = state.streak;
-      els.lives.textContent = state.lives;
-      els.bestScore.textContent = localStorage.getItem('nurseSafetyQuest.bestScore') || '0';
-    }
+  const livesDisplay = state.lives > 0 ? '❤️'.repeat(state.lives) : '💔';
+
+  els.score.textContent = state.score;
+  els.streak.textContent = state.streak;
+  els.lives.textContent = livesDisplay;
+
+  if (els.stageLives) {
+    els.stageLives.textContent = livesDisplay;
+  }
+
+  els.bestScore.textContent = localStorage.getItem('nurseSafetyQuest.bestScore') || '0';
+}
+
 
     function setStatus(text) {
       els.statusBubble.textContent = text;
@@ -1957,6 +2312,7 @@ if (els.dangerGerm) {
 
     els.startBtn.addEventListener('click', () => startGame(false));
     els.practiceBtn.addEventListener('click', () => startGame(true));
+	els.stagePlayAgainBtn.addEventListener('click', () => startGame(state.practice));
     els.playAgainBtn.addEventListener('click', () => startGame(state.practice));
     els.closeModalBtn.addEventListener('click', () => els.endModal.classList.remove('show'));
 
