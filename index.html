@@ -2046,9 +2046,10 @@ const shuffledChoices = shuffle(answerChoices);
         const btn = document.createElement('button');
         btn.className = 'answer';
         btn.type = 'button';
-        btn.innerHTML = `<span>${escapeHtml(choice.option)}</span><span aria-hidden="true">›</span>`;
+        btn.dataset.originalIndex = choice.originalIndex;
+btn.innerHTML = `<span>${escapeHtml(choice.option)}</span><span aria-hidden="true">›</span>`;
 btn.addEventListener('click', () => answerQuestion(choice.originalIndex));
-        els.answers.appendChild(btn);
+els.answers.appendChild(btn);
       });
 
       const progress = (state.index / state.questions.length) * 100;
@@ -2064,17 +2065,19 @@ btn.addEventListener('click', () => answerQuestion(choice.originalIndex));
       const answerButtons = [...document.querySelectorAll('.answer')];
       const isCorrect = selected === q.correct;
 
-      answerButtons.forEach((btn, idx) => {
-        btn.disabled = true;
+      answerButtons.forEach((btn) => {
+  const originalIndex = Number(btn.dataset.originalIndex);
 
-        if (idx === q.correct) {
-          btn.classList.add('correct');
-        }
+  btn.disabled = true;
 
-        if (idx === selected && !isCorrect) {
-          btn.classList.add('wrong');
-        }
-      });
+  if (originalIndex === q.correct) {
+    btn.classList.add('correct');
+  }
+
+  if (originalIndex === selected && !isCorrect) {
+    btn.classList.add('wrong');
+  }
+});
 
       if (isCorrect) {
         state.score += 10 + Math.min(state.streak * 2, 10);
