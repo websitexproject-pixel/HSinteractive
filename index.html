@@ -830,16 +830,16 @@
 
     .status-bubble {
       position: absolute;
-      left: 18px;
-      top: 54px;
-      max-width: calc(100% - 36px);
+      left: 12px;
+      top: 44px;
+      max-width: calc(100% - 24px);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 10px 12px;
+      border-radius: 13px;
+      padding: 6px 8px;
       background: rgba(255,255,255,.78);
       backdrop-filter: blur(10px);
       box-shadow: 0 12px 22px rgba(60,70,100,.11);
-      font-size: 13px;
+      font-size: 11px;
       color: var(--muted);
       z-index: 5;
     }
@@ -1321,6 +1321,64 @@ h1 {
         font-size: 11px;
         padding: 8px 10px;
       }
+	  .game-stage {
+  min-height: 255px;
+  height: 38vh;
+}
+
+.question-panel {
+  padding: 9px;
+}
+
+.progress-wrap {
+  height: 8px;
+  margin-bottom: 7px;
+}
+
+.question-card {
+  padding: 9px;
+  border-radius: 18px;
+}
+
+.question-top {
+  margin-bottom: 5px;
+}
+
+.pill {
+  padding: 5px 8px;
+  font-size: 9px;
+}
+
+.q-count {
+  font-size: 10px;
+}
+
+.question {
+  margin: 4px 0 7px;
+  font-size: 13px;
+  line-height: 1.18;
+}
+
+.answers {
+  gap: 6px;
+}
+
+.answer {
+  min-height: 36px;
+  padding: 7px 9px;
+  border-radius: 13px;
+  font-size: 11.5px;
+  line-height: 1.2;
+}
+
+.feedback {
+  margin-top: 6px;
+  min-height: 28px;
+  padding: 7px 8px;
+  border-radius: 13px;
+  font-size: 10.5px;
+  line-height: 1.2;
+}
     }
 
     @media (prefers-reduced-motion: reduce) {
